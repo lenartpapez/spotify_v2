@@ -1,0 +1,97 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-gray-300;
+}
+
+.sidenav {
+  @apply flex flex-col p-6 bg-gray-700 text-white;
+  min-width: 15rem;
+}
+
+.btn {
+  @apply font-medium text-sm rounded py-1 px-3;
+}
+
+.btn-lg {
+  @apply py-2 px-4 text-lg;
+}
+
+.btn-sm {
+  @apply py-1 px-2 text-xs;
+}
+
+.btn-default {
+  @apply bg-gray-800 text-white border-gray-800;
+}
+
+.btn-default:hover {
+  @apply bg-gray-700 border-gray-700;
+}
+
+.btn-default:disabled {
+  @apply bg-gray-300 border-gray-300;
+}
+
+.btn-outline-default {
+  @apply text-gray-800 border border-gray-800;
+}
+
+.btn-outline-default:hover {
+  @apply bg-gray-800 border text-white;
+}
+
+.btn-outline-danger {
+  @apply text-red-700 border border-red-700;
+}
+
+.btn-outline-danger:hover {
+  @apply bg-red-700 border text-white;
+}
+
+.btn-danger {
+  @apply bg-red-700 text-white border-red-700;
+}
+
+.btn-danger:hover {
+  @apply bg-red-600 border-red-600;
+}
+
+.btn-danger:disabled {
+  @apply bg-red-300 border-red-300;
+}
+
+.btn-link {
+  @apply text-gray-700 border-0;
+}
+
+.btn-link:hover {
+  @apply text-gray-900;
+}
+
+.alert {
+  @apply border px-4 py-2 rounded relative;
+}
+
+.alert-danger {
+  @apply bg-red-100 border-red-400 text-red-700;
+}
+
+.btn-nav {
+  @apply bg-gray-600 w-full;
+}
+
+.wrapper {
+  @apply bg-white m-6 rounded shadow-md overflow-auto w-full;
+  height: calc(100vh - 11rem);
+}
+
+.component {
+  @apply flex p-5;
+}
+
+.footer {
+  @apply h-12 bg-black text-white flex justify-center items-center;
+}
