@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import store from '../store'
 
 Vue.use(VueRouter)
 
@@ -14,6 +15,9 @@ const routes = [
     path: '/umek',
     name: 'umek',
     label: 'Umek',
+    meta: {
+      auth: true
+    },
     component: require('@/views/Umek.vue').default
   },
   {
@@ -24,6 +28,18 @@ const routes = [
 
 const router = new VueRouter({
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  if(to.matched.some(record => record.meta.auth)) {
+    if (localStorage.access_token) {
+      next()
+      return
+    }
+    next('/') 
+  } else {
+    next() 
+  }
 })
 
 export default router

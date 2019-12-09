@@ -11,12 +11,14 @@ Vue.use(VueAxios, axios)
 
 axios.defaults.baseURL = 'https://api.spotify.com/v1'
 
-Vue.use(reactiveStorage, {
-  access_token: null,
-  user: null,
-  song: null
-});
+const token = localStorage.access_token
+if(token) {
+  axios.defaults.headers.common['Authorization'] = 'Bearer ' + token.slice(1, -1)
+}
 
+Vue.use(reactiveStorage, {
+  access_token: null
+});
 
 Vue.config.productionTip = false
 

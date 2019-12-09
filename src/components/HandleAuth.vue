@@ -8,38 +8,19 @@ export default {
 
   data () {
     return {
-      token: null,
-      expires_in: null
+
     }
   },
 
-  async mounted () {
+  mounted () {
     let url = new URLSearchParams(window.location.hash.substring(2))
-    this.token = url.get('access_token')
-    this.expires_in = url.get('expires_in')
-    if (this.token) {
-      await this.fetchUser()
+    let token = url.get('access_token')
+    if (token) {
+      this.localStorage.access_token = token
+      this.axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
+      this.$store.dispatch('setUserAction')
     }
     this.$router.push({ name: 'front' })
-  },
-
-  methods: {
-    fetchUser () {
-      return this.axios.get('/me',
-        {
-          headers: {
-            'Authorization': 'Bearer ' + this.token
-          }
-        }).then(response => {
-          this.loginUser(response.data)
-      })
-    },
-
-    loginUser (data) {
-      this.localStorage.access_token = this.token,
-      this.localStorage.user = JSON.stringify(data)
-    }
-
   }
 
 }

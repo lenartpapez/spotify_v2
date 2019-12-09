@@ -24,14 +24,22 @@
       'app-nav': Nav,
       'app-footer': Footer
     },
+    
 
-    mounted() {
-      this.localStorage.song = null
-      /* if(this.localStorage.access_token && this.localStorage.expires_at < +this.$moment()) {
-        this.localStorage = {}
-        this.localStorage.auth = false
-      } */
+    created() {
+
+      if(this.localStorage.access_token) this.$store.dispatch('setUserAction')
+
+      this.axios.interceptors.response.use(undefined, function (err) {
+        return new Promise(function (resolve, reject) {
+          if (err.status === 401 && err.config && !err.config.__isRetryRequest) {
+            this.$store.commit('logout')
+          }
+          throw err;
+        });
+      })
     }
 
   }
+
 </script>
