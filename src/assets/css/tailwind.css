@@ -85,7 +85,7 @@ body {
 
 .wrapper {
   @apply bg-white m-6 rounded shadow-md overflow-auto w-full;
-  height: calc(100vh - 11rem);
+  height: calc(100vh - 13rem);
 }
 
 .component {
@@ -93,5 +93,5 @@ body {
 }
 
 .footer {
-  @apply h-12 bg-black text-white flex justify-center items-center;
+  @apply h-20 bg-black text-white flex justify-center items-center;
 }

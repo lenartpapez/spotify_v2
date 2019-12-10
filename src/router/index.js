@@ -12,6 +12,11 @@ const routes = [
     component: require('@/views/Front.vue').default
   },
   {
+    path: '/search',
+    name: 'search-results',
+    component: require('@/views/SearchResults.vue').default
+  },
+  {
     path: '/umek',
     name: 'umek',
     label: 'Umek',

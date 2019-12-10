@@ -1,6 +1,8 @@
 <template>
   <div class="flex h-20 p-6 justify-between items-center bg-gray-800">
-    <img class="h-12" src="../assets/img/vue-music.png" />
+    <div style="height: 3.5rem">
+      <img class="h-full" src="../assets/img/vue-music.png" />
+    </div>
     <div class="flex">
       <div v-if="localStorage.access_token">
         <span class="text-white font-semibold mr-3" v-if="$store.state.user"> {{ $store.getters.userName }} </span>

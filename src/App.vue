@@ -4,7 +4,11 @@
     <div class="flex">
       <app-nav></app-nav>
       <div class="wrapper">
-          <router-view></router-view>  
+          <transition
+            name="fade"
+            mode="out-in">
+            <router-view/>
+          </transition>
       </div>
     </div>
     <app-footer></app-footer>
@@ -27,19 +31,33 @@
     
 
     created() {
-
+      this.axios.interceptors.response.use((response) => {
+        return response;
+      }, (error) => {
+        if(error.response.status === 401) {
+          this.$store.commit('logout')
+        }
+        return Promise.reject(error);
+      });
       if(this.localStorage.access_token) this.$store.dispatch('setUserAction')
-
-      this.axios.interceptors.response.use(undefined, function (err) {
-        return new Promise(function (resolve, reject) {
-          if (err.status === 401 && err.config && !err.config.__isRetryRequest) {
-            this.$store.commit('logout')
-          }
-          throw err;
-        });
-      })
     }
 
   }
 
 </script>
+
+<style>
+
+  .fade-enter-active,
+  .fade-leave-active {
+    transition-duration: 0.2s;
+    transition-property: opacity;
+    transition-timing-function: ease;
+  }
+
+  .fade-enter,
+  .fade-leave-active {
+    opacity: 0
+  }
+  
+</style>
