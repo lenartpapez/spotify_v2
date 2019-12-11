@@ -6,18 +6,21 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
-    name: 'front',
-    label: 'Home',
-    icon: 'fa fa-home',
-    component: require('@/views/Front.vue').default
+    path: "/",
+    name: "front",
+    label: "Home",
+    icon: "fa fa-home",
+    component: require("@/views/Front.vue").default
   },
   {
-    path: '/search',
-    name: 'search-results',
-    label: 'Search',
-    icon: 'fa fa-search',
-    component: require('@/views/SearchResults.vue').default
+    path: "/search",
+    name: "search-results",
+    label: "Search",
+    icon: "fa fa-search",
+    meta: {
+      auth: true
+    },
+    component: require("@/views/SearchResults.vue").default
   },
   /* {
     path: '/umek',
@@ -29,10 +32,10 @@ const routes = [
     component: require('@/views/Umek.vue').default
   }, */
   {
-    path: '*',
-    component: require('@/components/HandleAuth.vue').default
+    path: "*",
+    component: require("@/components/HandleAuth.vue").default
   }
-]
+];
 
 const router = new VueRouter({
   routes
