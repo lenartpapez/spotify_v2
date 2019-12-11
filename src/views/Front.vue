@@ -1,5 +1,5 @@
 <template>
-  <div class="component">
+  <div class="flex p-5">
     <div v-if="localStorage.access_token">
       Front Page
     </div>

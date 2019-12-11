@@ -6,6 +6,8 @@ import axios from 'axios'
 import VueAxios from 'vue-axios'
 import './assets/css/tailwind.css'
 import reactiveStorage from 'vue-reactive-storage'
+import VueSlider from "vue-slider-component"
+import "vue-slider-component/theme/antd.css"
 
 Vue.use(VueAxios, axios)
 
@@ -19,6 +21,8 @@ if(token) {
 Vue.use(reactiveStorage, {
   access_token: null
 });
+
+Vue.component("VueSlider", VueSlider);
 
 Vue.config.productionTip = false
 

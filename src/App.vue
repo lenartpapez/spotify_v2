@@ -31,15 +31,41 @@
     
 
     created() {
-      this.axios.interceptors.response.use((response) => {
-        return response;
-      }, (error) => {
-        if(error.response.status === 401) {
-          this.$store.commit('logout')
-        }
-        return Promise.reject(error);
-      });
+      this.setInterceptor()
       if(this.localStorage.access_token) this.$store.dispatch('setUserAction')
+      window.onSpotifyWebPlaybackSDKReady = () => {
+        this.initializePlayer()
+      };
+    },
+
+    methods: {
+      initializePlayer() {
+        const player = new Spotify.Player({
+          name: 'VueMusic Player',
+          getOAuthToken: cb => { cb(localStorage.access_token.slice(1, -1)); },
+          volume: '0.5'
+        });
+
+        player.addListener('player_state_changed', ({ duration, track_window: { current_track } }) => { 
+          this.$store.commit('setTrack', { track: current_track, duration: duration })
+        });
+
+        player.connect();
+        window.player = player
+      },
+
+      setInterceptor() {
+        this.$store.commit('toggleLoading')
+        this.axios.interceptors.response.use((response) => {
+          this.$store.commit('toggleLoading')
+          return response;
+        }, (error) => {
+          if(error.response.status === 401) {
+            this.$store.commit('logout')
+          }
+          return Promise.reject(error);
+        });
+      }
     }
 
   }

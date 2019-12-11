@@ -1,8 +1,13 @@
 <template>
-    <div class="flex flex-wrap">
-        <div class="w-1/4 p-4" v-for="track in data.items" :key="track.id">
-            <span class="text-sm mr-2">{{ track.name }} <i @click="$store.dispatch('playSong', { track: track })" class="fas fa-play-circle text-red-500"></i></span>
-            <img class="mt-3 rounded shadow-md w-full" :src="track.album.images[1].url" />
+    <div class="flex flex-col">
+        <div class="p-6 bg-gray-600 text-white">
+            <h3 class="text-4xl">Tracks</h3>
+        </div>
+        <div class="flex flex-wrap p-3">
+            <div class="w-1/4 lg:w-1/5 p-3" v-for="track in data.items" :key="track.id">
+                <span class="text-sm mr-2">{{ track.name }} <i @click="$store.dispatch('play', { track: track })" class="fas fa-play-circle text-red-500"></i></span>
+                <img class="mt-3 rounded shadow-md w-full" :src="track.album.images[0].url" />
+            </div>
         </div>
     </div>
 </template>

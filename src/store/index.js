@@ -7,33 +7,35 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    user: null,
-    currentlyPlaying: null,
+    user: {},
+    track: {
+      artist: '',
+      name: '',
+      duration: 0
+    },
     playing: false,
     loading: false,
-    latestSearchResults: null
+    latestSearchResults: {}
   },
   mutations: {
     setUser(state, user) {
       state.user = user
     },
-    clearUser(state) {
-      state.user = null
-    },
-    setCurrentlyPlaying(state, item) {
-      state.currentlyPlaying = item
+    setTrack(state, params) {
+      state.track.artist = params.track.artists[0].name
+      state.track.name = params.track.name
+      state.track.duration = params.duration
     },
     logout(state) {
       localStorage.clear()
+      state.user = {}
       router.go()
-      state.user = null
     },
     togglePlaying(state) {
       state.playing = !state.playing
     },
     setSearchResults(state, results) {
       state.latestSearchResults = results
-      state.loading = false
     },
     toggleLoading(state) {
       state.loading = !state.loading
@@ -44,28 +46,23 @@ export default new Vuex.Store({
       await Axios.get('/me').then(response => commit('setUser', response.data))
     },
     async fetchResults({ commit }, params) {
-      commit('toggleLoading')
       let response = await Axios.get('search?query=' + params.query + '&type=' + params.type + '&limit=10')
       commit('setSearchResults', response.data)
-      if(params.route !== 'search-results') {
-        router.push({ name: 'search-results'})
-      }
     },
     async play({ commit, state }, params) {
-      if(params.type === 'playlist') {
-        let response = await Axios.get('/playlists/' + params.playlist.id + '/tracks')
+      if(params.type === 'playlists' || params.type === 'albums') {
+        let response = await Axios.get(params.type + '/' + params.toPlay.id + '/tracks')
         Axios.put('/me/player/play?device_id=' + localStorage._spharmony_device_id, {
           uris: response.data.items.map(item => item.track.uri)
-        }).then(() => {
-          let firstTrack = response.data.items[0].track
-          commit('setCurrentlyPlaying', '[' + params.playlist.name + '] ' + firstTrack.artists[0].name + ' - ' + firstTrack.name)
+        })
+      } else if(params.type === 'artists') {
+        let response = await Axios.get(params.type + '/' + params.toPlay.id + '/top-tracks?country=' + state.user.country)
+        Axios.put('/me/player/play?device_id=' + localStorage._spharmony_device_id, {
+          uris: response.data.tracks.map(track => track.uri)
         })
       } else {
         Axios.put('/me/player/play?device_id=' + localStorage._spharmony_device_id, {
           uris: [ params.track.uri ]
-        })
-        .then(() => {
-          commit('setCurrentlyPlaying', params.track.artists[0].name + ' - ' + params.track.name)
         })
       }
       if (!state.playing) commit('togglePlaying')
@@ -77,8 +74,11 @@ export default new Vuex.Store({
     userName: state => {
       return state.user.display_name
     },
-    getCurrentlyPlaying: state => {
-      return state.currentlyPlaying
+    trackName: state => {
+      return state.track.name
+    },
+    trackArtist: state => {
+      return state.track.artist
     },
     playing: state => {
       return state.playing
@@ -99,7 +99,7 @@ export default new Vuex.Store({
       return state.loading
     },
     hasResults: state => {
-      return state.latestSearchResults !== null
-    }
+      return Object.keys(state.latestSearchResults).length > 0
+    },
   }
 })

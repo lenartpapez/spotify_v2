@@ -88,10 +88,6 @@ body {
   height: calc(100vh - 13rem);
 }
 
-.component {
-  @apply flex p-5;
-}
-
 .footer {
-  @apply h-20 bg-black text-white flex justify-center items-center;
+  @apply h-20 bg-black text-white;
 }

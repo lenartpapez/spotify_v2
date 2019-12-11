@@ -9,14 +9,17 @@ const routes = [
     path: '/',
     name: 'front',
     label: 'Home',
+    icon: 'fa fa-home',
     component: require('@/views/Front.vue').default
   },
   {
     path: '/search',
     name: 'search-results',
+    label: 'Search',
+    icon: 'fa fa-search',
     component: require('@/views/SearchResults.vue').default
   },
-  {
+  /* {
     path: '/umek',
     name: 'umek',
     label: 'Umek',
@@ -24,7 +27,7 @@ const routes = [
       auth: true
     },
     component: require('@/views/Umek.vue').default
-  },
+  }, */
   {
     path: '*',
     component: require('@/components/HandleAuth.vue').default
