@@ -11,11 +11,17 @@ export default new Vuex.Store({
     track: {
       artist: '',
       name: '',
-      duration: 0
+      duration: 0,
+      image: ''
     },
     playing: false,
-    loading: false,
-    latestSearchResults: {}
+    searching: false,
+    latestSearchResults: {
+      tracks: { items: [] },
+      albums: { items: [] },
+      artists: { items: [] },
+      playlists: { items: [] }
+    }
   },
   mutations: {
     setUser(state, user) {
@@ -36,16 +42,15 @@ export default new Vuex.Store({
     },
     setSearchResults(state, results) {
       state.latestSearchResults = results
-    },
-    toggleLoading(state) {
-      state.loading = !state.loading
+      state.searching = false
     }
   },
   actions: {
     async setUserAction({ commit }) {
       await Axios.get('/me').then(response => commit('setUser', response.data))
     },
-    async fetchResults({ commit }, params) {
+    async fetchResults({ commit, state }, params) {
+      state.searching = true
       let response = await Axios.get('search?query=' + params.query + '&type=' + params.type + '&limit=10')
       commit('setSearchResults', response.data)
     },
@@ -80,6 +85,9 @@ export default new Vuex.Store({
     trackArtist: state => {
       return state.track.artist
     },
+    trackImage: state => {
+      return state.track.image
+    },
     playing: state => {
       return state.playing
     },
@@ -95,11 +103,20 @@ export default new Vuex.Store({
     tracksSearch: state => {
       return state.latestSearchResults.tracks
     },
-    loading: state => {
-      return state.loading
+    searching: state => {
+      return state.searching
     },
-    hasResults: state => {
-      return Object.keys(state.latestSearchResults).length > 0
+    hasTracks: state => {
+      return state.latestSearchResults.tracks.items.length > 0
     },
+    hasAlbums: state => {
+      return state.latestSearchResults.albums.items.length > 0
+    },
+    hasArtists: state => {
+      return state.latestSearchResults.artists.items.length > 0
+    },
+    hasPlaylists: state => {
+      return state.latestSearchResults.playlists.items.length > 0
+    }
   }
 })

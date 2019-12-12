@@ -55,9 +55,7 @@
       },
 
       setInterceptor() {
-        this.$store.commit('toggleLoading')
         this.axios.interceptors.response.use((response) => {
-          this.$store.commit('toggleLoading')
           return response;
         }, (error) => {
           if(error.response.status === 401) {

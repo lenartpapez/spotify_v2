@@ -91,3 +91,22 @@ body {
 .footer {
   @apply h-20 bg-black text-white;
 }
+
+.opacity-10 {
+  opacity: 0.1
+}
+
+.loader {
+  position: absolute;
+  left: calc(18rem + 50%);
+  margin-left: calc(-9rem - 40px);
+  top: calc(8rem + 50%);
+  margin-top: calc(-4rem - 40px);
+}
+
+.double-bounce1 {
+  background-color: #f56565 !important;
+}
+.double-bounce2 {
+  background-color: #c53030 !important;
+}
