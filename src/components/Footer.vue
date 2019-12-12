@@ -1,14 +1,14 @@
 <template>
     <div class="footer">
-        <div v-if="$store.getters.playing" class="flex p-4 items-center">
-            <div class="w-64 inline-block">
+        <div v-if="$store.getters.trackName !== ''" class="flex p-4 items-center">
+            <div class="w-64 flex">
                 <img class="h-12 mr-3 rounded" :src="$store.getters.trackImage" alt="" />
                 <div>
                     <span class="block text-xs">{{ $store.getters.trackArtist }}</span>
                     <span class="block text-sm">{{ $store.getters.trackName }}</span>
                 </div>
             </div>
-            <div v-if="$store.getters.playing" class="flex-grow flex justify-center">
+            <div v-if="$store.getters.trackName !== ''" class="flex-grow flex justify-center">
                 <button class="p-2 w-10 rounded-full border border-white hover:bg-white hover:text-black" @click="previousTrack">
                     <i class="fas fa-backward" style="margin-right: 0.1rem"></i>
                 </button>
