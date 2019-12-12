@@ -2,9 +2,9 @@
     <div class="footer">
         <div v-if="$store.getters.playing" class="flex p-4 items-center">
             <div class="w-64 inline-block">
-                <img :src="$store.getters.trackImage" alt="" />
+                <img class="h-12 mr-3 rounded" :src="$store.getters.trackImage" alt="" />
                 <div>
-                    <span class="block text-xs mb-1">{{ $store.getters.trackArtist }}</span>
+                    <span class="block text-xs">{{ $store.getters.trackArtist }}</span>
                     <span class="block text-sm">{{ $store.getters.trackName }}</span>
                 </div>
             </div>

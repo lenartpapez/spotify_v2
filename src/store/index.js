@@ -31,6 +31,7 @@ export default new Vuex.Store({
       state.track.artist = params.track.artists[0].name
       state.track.name = params.track.name
       state.track.duration = params.duration
+      state.track.image = params.track.album.images[0].url
     },
     logout(state) {
       localStorage.clear()
