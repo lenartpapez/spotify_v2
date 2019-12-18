@@ -12,6 +12,7 @@ export default new Vuex.Store({
       artist: '',
       name: '',
       duration: 0,
+      position: 0,
       image: ''
     },
     playing: false,
@@ -88,6 +89,9 @@ export default new Vuex.Store({
     },
     trackImage: state => {
       return state.track.image
+    },
+    trackDuration: state => {
+      return state.track.duration
     },
     playing: state => {
       return state.playing

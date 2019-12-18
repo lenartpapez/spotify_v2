@@ -85,11 +85,17 @@ body {
 
 .wrapper {
   @apply bg-white m-6 rounded shadow-md overflow-auto w-full;
-  height: calc(100vh - 13rem);
+  height: calc(100vh - 13.5rem);
 }
 
 .footer {
-  @apply h-20 bg-black text-white;
+  @apply bg-black text-white;
+  height: 6.5rem;
+}
+
+.footer .controls button {
+  outline: none !important;
+  box-shadow: none !important; 
 }
 
 .opacity-10 {

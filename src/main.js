@@ -22,6 +22,8 @@ Vue.use(reactiveStorage, {
   access_token: null
 });
 
+Vue.use(require('vue-moment'));
+
 Vue.component("VueSlider", VueSlider);
 
 Vue.config.productionTip = false

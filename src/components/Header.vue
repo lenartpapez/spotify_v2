@@ -1,6 +1,6 @@
 <template>
-  <div class="flex h-20 p-6 justify-between items-center bg-gray-800">
-    <div style="height: 3.5rem">
+  <div class="flex h-16 p-6 justify-between items-center bg-gray-800">
+    <div style="height: 2.5rem">
       <img class="h-full" src="/img/vue-music.png" />
     </div>
     <div class="flex">

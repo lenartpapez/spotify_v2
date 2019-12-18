@@ -46,7 +46,7 @@
           volume: '0.5'
         });
 
-        player.addListener('player_state_changed', ({ duration, track_window: { current_track } }) => { 
+        player.addListener('player_state_changed', ({ duration, position, track_window: { current_track } }) => { 
           this.$store.commit('setTrack', { track: current_track, duration: duration })
         });
 

@@ -1,32 +1,47 @@
 <template>
     <div class="footer">
         <div v-if="$store.getters.trackName !== ''" class="flex p-4 items-center">
-            <div class="w-64 flex">
+            <div class="w-1/3 flex">
                 <img class="h-12 mr-3 rounded" :src="$store.getters.trackImage" alt="" />
-                <div>
+                <div class="flex flex-col justify-center">
                     <span class="block text-xs">{{ $store.getters.trackArtist }}</span>
                     <span class="block text-sm">{{ $store.getters.trackName }}</span>
                 </div>
             </div>
-            <div v-if="$store.getters.trackName !== ''" class="flex-grow flex justify-center">
-                <button class="p-2 w-10 rounded-full border border-white hover:bg-white hover:text-black" @click="previousTrack">
-                    <i class="fas fa-backward" style="margin-right: 0.1rem"></i>
-                </button>
-                <button @click="togglePlay" class="bg-red-500 p-2 w-10 mx-4 rounded-full hover:bg-red-700">
-                    <i v-if="$store.getters.playing" class="fas fa-pause"></i>
-                    <i v-else class="fas fa-play"></i>
-                </button>
-                <button class="p-2 w-10 rounded-full border border-white hover:text-black hover:bg-white" @click="nextTrack">
-                    <i class="fas fa-forward" style="margin-left: 0.2rem"></i>
-                </button>
+            <div v-if="$store.getters.trackName !== ''" class="controls flex flex-col items-center flex-grow mt-1">
+                <div class="flex items-center mb-2">
+                    <button class="p-2 w-10 rounded-full hover:bg-gray-900" @click="previousTrack">
+                        <i class="fas fa-step-backward"></i>
+                    </button>
+                    <button @click="togglePlay" class="bg-red-500 p-2 w-10 mx-4 rounded-full hover:bg-red-700">
+                        <i v-if="$store.getters.playing" class="fas fa-pause"></i>
+                        <i v-else class="fas fa-play"></i>
+                    </button>
+                    <button class="p-2 w-10 rounded-full hover:bg-gray-900" @click="nextTrack">
+                        <i class="fas fa-step-forward"></i>
+                    </button>
+                </div>
+                <div class="flex w-full items-center">
+                    <span class="mr-2 w-10 text-xs">{{ new Date(position) | moment("mm:ss") }}</span>
+                    <vue-slider :tooltip="'none'" 
+                        :dot-style="{ borderColor: 'white'}"
+                        :rail-style="{ backgroundColor: 'gray' }"
+                        :process-style="{ backgroundColor: '#f56565' }"
+                        @change="onProgressChange"
+                        :max="duration"
+                        dot-size="8" style="width: 100%" :lazy="true" v-model="position">
+                    </vue-slider>
+                    <span class="text-xs w-10 ml-2">{{ new Date(duration) | moment("mm:ss") }}</span>
+                </div>
+                
             </div>
-            <div class="w-64 text-right flex justify-end">
+            <div class="w-1/3 text-right flex justify-end">
                 <i class="fa fa-volume-up mr-2" />
                 <vue-slider :tooltip="'none'" 
                     :dot-style="{ borderColor: 'white'}"
                     :rail-style="{ backgroundColor: 'gray' }"
                     :process-style="{ backgroundColor: '#f56565' }"
-                    :lazy="true" style="width: 70%" dot-size="12" v-model="volume">
+                    :lazy="true" style="width: 40%" dot-size="12" v-model="volume">
                 </vue-slider>
             </div>
         </div>
@@ -35,12 +50,31 @@
 
 
 <script>
+
     export default {
 
         data() {
             return {
-                volume: 50
+                volume: 50,
+                position: 0,
+                duration: 0,
+                progress: null,
+                lastTrack: null
             }
+        },
+
+        created()  {
+            this.$store.watch((state, getters) => getters.trackDuration, (newValue) => {
+                this.position = 0
+                this.duration = newValue
+            })
+            this.$store.watch((state, getters) => getters.playing, (newValue) => {
+                if(newValue) {
+                    this.updateProgress();
+                } else {
+                    clearInterval(this.progress)
+                }
+            })
         },
 
         watch: {
@@ -50,16 +84,41 @@
         },
 
         methods: {
-            togglePlay() {
+
+            async togglePlay() {
                 window.player.togglePlay().then(() => this.$store.commit('togglePlaying'))
             },
-            nextTrack() {
-                window.player.nextTrack().then(() => {})
+
+            async nextTrack() {
+                await window.player.nextTrack().then(() => {
+                    if (!this.$store.getters.playing) this.$store.commit('togglePlaying')
+                })
             },
-            previousTrack() {
-                window.player.previousTrack().then(() => {})
+
+            async previousTrack() {
+                await window.player.previousTrack().then(() => {
+                    if (!this.$store.getters.playing) this.$store.commit('togglePlaying')
+                })
+            },
+
+            updateProgress() {
+                if (this.$store.getters.playing) {
+                    this.progress = setInterval(() => {
+                        if(this.position + 1000 < this.duration) {
+                            this.position += 1000
+                        }
+                    }, 1000)
+                }
+            },
+
+            async onDragEnd(value) {
+                await window.player.seek(value)
+            },
+
+            async onProgressChange(value) {
+                await window.player.seek(value)
             }
         }
-    
+
     }
 </script>
