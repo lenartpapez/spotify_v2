@@ -56,11 +56,15 @@
 
       setInterceptor() {
         this.axios.interceptors.response.use((response) => {
+          this.$store.commit('setError', { status: false, message: '' })
           return response;
         }, (error) => {
           if(error.response.status === 401) {
             this.$store.commit('logout')
+          } else if(error.response.status === 400) {
+            this.$store.commit('setError', { status: true, message: error.response.data.error.message })
           }
+          this.$store.commit('toggleSearching')
           return Promise.reject(error);
         });
       }

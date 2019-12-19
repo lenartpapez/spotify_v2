@@ -14,8 +14,7 @@
                         <i class="fas fa-step-backward"></i>
                     </button>
                     <button @click="togglePlay" class="bg-red-500 p-2 w-10 mx-4 rounded-full hover:bg-red-700">
-                        <i v-if="$store.getters.playing" class="fas fa-pause"></i>
-                        <i v-else class="fas fa-play"></i>
+                        <i class="fas" :class="$store.getters.playing ? 'fa-pause' : 'fa-play'"></i>
                     </button>
                     <button class="p-2 w-10 rounded-full hover:bg-gray-900" @click="nextTrack">
                         <i class="fas fa-step-forward"></i>
@@ -35,13 +34,15 @@
                 </div>
                 
             </div>
-            <div class="w-1/3 text-right flex justify-end">
-                <i class="fa fa-volume-up mr-2" />
+            <div class="w-1/3 text-right flex justify-end items-center">
+                <button @click="toggleMute" class="focus:outline-none focus:shadow-none mr-3">
+                    <i class="fa" :class="muted ? 'fa-volume-mute' : 'fa-volume-up'" />
+                </button>
                 <vue-slider :tooltip="'none'" 
                     :dot-style="{ borderColor: 'white'}"
                     :rail-style="{ backgroundColor: 'gray' }"
                     :process-style="{ backgroundColor: '#f56565' }"
-                    :lazy="true" style="width: 40%" dot-size="12" v-model="volume">
+                    :lazy="true" style="width: 30%" dot-size="12" v-model="volume">
                 </vue-slider>
             </div>
         </div>
@@ -58,8 +59,9 @@
                 volume: 50,
                 position: 0,
                 duration: 0,
-                progress: null,
-                lastTrack: null
+                lastVolume: 0,
+                muted: false,
+                progress: null
             }
         },
 
@@ -109,6 +111,16 @@
                         }
                     }, 1000)
                 }
+            },
+
+            toggleMute() {
+                if(this.muted) {
+                    this.volume = this.lastVolume
+                } else {
+                    this.lastVolume = this.volume
+                    this.volume = 0
+                } 
+                this.muted = !this.muted
             },
 
             async onDragEnd(value) {

@@ -1,7 +1,9 @@
 <template>
   <div class="flex h-16 p-6 justify-between items-center bg-gray-800">
     <div style="height: 2.5rem">
-      <img class="h-full" src="/img/vue-music.png" />
+      <router-link :to="{ name: 'front' }">
+        <img class="h-full" src="/img/vue-music.png" />
+      </router-link>
     </div>
     <div class="flex">
       <div v-if="localStorage.access_token">

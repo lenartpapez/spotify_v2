@@ -22,6 +22,10 @@ export default new Vuex.Store({
       albums: { items: [] },
       artists: { items: [] },
       playlists: { items: [] }
+    },
+    error: {
+      status: false,
+      message: ''
     }
   },
   mutations: {
@@ -45,6 +49,12 @@ export default new Vuex.Store({
     setSearchResults(state, results) {
       state.latestSearchResults = results
       state.searching = false
+    },
+    setError(state, error) {
+      state.error = error
+    },
+    toggleSearching(state) {
+      state.searching = !state.searching
     }
   },
   actions: {
@@ -53,8 +63,10 @@ export default new Vuex.Store({
     },
     async fetchResults({ commit, state }, params) {
       state.searching = true
-      let response = await Axios.get('search?query=' + params.query + '&type=' + params.type + '&limit=10')
-      commit('setSearchResults', response.data)
+      await Axios.get('search?query=' + params.query + '&type=' + params.type + '&limit=10')
+      .then(response => {
+        commit('setSearchResults', response.data)
+      })
     },
     async play({ commit, state }, params) {
       if(params.type === 'playlists' || params.type === 'albums') {
@@ -112,16 +124,22 @@ export default new Vuex.Store({
       return state.searching
     },
     hasTracks: state => {
-      return state.latestSearchResults.tracks.items.length > 0
+      return state.latestSearchResults.tracks && state.latestSearchResults.tracks.items.length > 0
     },
     hasAlbums: state => {
-      return state.latestSearchResults.albums.items.length > 0
+      return state.latestSearchResults.albums && state.latestSearchResults.albums.items.length > 0
     },
     hasArtists: state => {
-      return state.latestSearchResults.artists.items.length > 0
+      return state.latestSearchResults.artists && state.latestSearchResults.artists.items.length > 0
     },
     hasPlaylists: state => {
-      return state.latestSearchResults.playlists.items.length > 0
+      return state.latestSearchResults.playlists && state.latestSearchResults.playlists.items.length > 0
+    },
+    errorStatus: state => {
+      return state.error.status
+    },
+    errorMessage: state => {
+      return state.error.message
     }
   }
 })
