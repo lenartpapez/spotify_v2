@@ -5,13 +5,13 @@
         </div>
         <div class="flex flex-wrap p-3">
             <div class="w-1/4 lg:w-1/5 p-3" v-for="track in data.items" :key="track.id">
-                <span class="text-sm mr-2">{{ track.name }} <i @click="$store.dispatch('play', { track: track })" class="fas fa-play-circle text-red-500"></i></span>
-                <div id="play-wrapper" class="relative">
-                    <img class="mt-3 rounded shadow-md w-full" :src="track.album.images[0].url" />
-                    <button id="play-btn" class="btn btn-play">
-                        <i class="fas fa-play"></i>
-                    </button>
-                </div> 
+                <span class="text-sm mr-2">{{ track.name }} </span>
+                <vue-hover-mask @click="playTrack(track)" class="mt-3">
+                    <img class="rounded shadow-md w-full" :src="track.album.images[0].url" />
+                    <template #action>
+                        <i class="fas p-6 fa-play rounded-full bg-red-500"></i>
+                    </template>
+                </vue-hover-mask> 
             </div>
         </div>
     </div>
@@ -19,6 +19,11 @@
 
 <script>
     export default {
-        props: [ 'data' ]
+        props: [ 'data' ],
+        methods: {
+            playTrack(track) {
+                this.$store.dispatch('play', { track: track })
+            }
+        }
     }
 </script>

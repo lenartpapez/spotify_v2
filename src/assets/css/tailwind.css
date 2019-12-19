@@ -118,9 +118,17 @@ body {
 }
 
 .btn-play {
-  @apply absolute hidden bg-gray-600 text-white text-sm px-6 py-3;
+  @apply absolute bg-gray-600 text-white text-sm px-6 py-3;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   -ms-transform: translate(-50%, -50%);
+}
+
+.fa-play:before {
+  margin-left: .2rem;
+}
+
+.vue-hover-mask_action {
+  background-color: rgba(0, 0, 0, .55) !important;
 }

@@ -8,6 +8,7 @@ import './assets/css/tailwind.css'
 import reactiveStorage from 'vue-reactive-storage'
 import VueSlider from "vue-slider-component"
 import "vue-slider-component/theme/antd.css"
+import VueHoverMask from 'vue-hover-mask'
 
 Vue.use(VueAxios, axios)
 
@@ -25,6 +26,8 @@ Vue.use(reactiveStorage, {
 Vue.use(require('vue-moment'));
 
 Vue.component("VueSlider", VueSlider);
+
+Vue.component(VueHoverMask.name, VueHoverMask)
 
 Vue.config.productionTip = false
 
