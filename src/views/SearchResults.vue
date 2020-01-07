@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="flex justify-between bg-gray-800 p-3 text-white absolute w-full rounded-t z-50" style="width: calc(100vw - 18rem)">
+        <div class="search-and-type">
           <input class="bg-transparent outline-none w-full mr-3 shadow-none" v-model="query" placeholder="Type to search..."/>
           <div class="types flex">
             <label v-for="type in types" :key="type" class="flex items-center text-white">

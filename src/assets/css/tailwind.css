@@ -7,8 +7,28 @@ body {
 }
 
 .sidenav {
-  @apply flex flex-col p-6 bg-gray-700 text-white;
-  min-width: 15rem;
+  @apply flex-col p-6 bg-gray-700 text-white;
+  min-width: 200px;
+}
+
+.search-and-type {
+  @apply flex justify-between bg-gray-800 p-3 text-white absolute w-full rounded-t z-50;
+  width: calc(100vw - 15.5rem);
+}
+
+.router-link-active {
+  @apply bg-gray-800 !important;
+}
+
+@media screen and (max-width: 768px) {
+  .search-and-type {
+    width: calc(100vw - 6rem);
+  }
+}
+
+.narrow-sidenav {
+  @apply flex-col bg-gray-700 text-white;
+  min-width: 48px;
 }
 
 .btn {
