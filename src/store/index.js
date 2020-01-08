@@ -194,28 +194,32 @@ export default new Vuex.Store({
     },
     trackPages: state => {
       return { 
-        page: state.latestSearchResults.tracks.offset, 
+        offset: state.latestSearchResults.tracks.offset,
+        page: state.latestSearchResults.tracks.offset / state.latestSearchResults.tracks.limit + 1, 
         limit: state.latestSearchResults.tracks.limit,
         total: state.latestSearchResults.tracks.total
       }
     },
     albumPages: state => {
       return { 
-        page: state.latestSearchResults.albums.offset, 
+        offset: state.latestSearchResults.albums.offset,
+        page: state.latestSearchResults.albums.offset / state.latestSearchResults.albums.limit + 1, 
         limit: state.latestSearchResults.albums.limit,
         total: state.latestSearchResults.albums.total
       }
     },
     artistPages: state => {
       return { 
-        page: state.latestSearchResults.artists.offset, 
+        offset: state.latestSearchResults.artists.offset,
+        page: state.latestSearchResults.artists.offset / state.latestSearchResults.artists.limit + 1, 
         limit: state.latestSearchResults.artists.limit,
         total: state.latestSearchResults.artists.total
       }
     },
     playlistPages: state => {
       return { 
-        page: state.latestSearchResults.playlists.offset, 
+        offset: state.latestSearchResults.playlists.offset,
+        page: state.latestSearchResults.playlists.offset / state.latestSearchResults.playlists.limit + 1, 
         limit: state.latestSearchResults.playlists.limit,
         total: state.latestSearchResults.playlists.total
       }
