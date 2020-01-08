@@ -9,6 +9,7 @@ import reactiveStorage from 'vue-reactive-storage'
 import VueSlider from "vue-slider-component"
 import "vue-slider-component/theme/antd.css"
 import VueHoverMask from 'vue-hover-mask'
+import Pagination from "./components/common/Pagination.vue"
 
 Vue.use(VueAxios, axios)
 
@@ -26,6 +27,8 @@ Vue.use(reactiveStorage, {
 Vue.use(require('vue-moment'));
 
 Vue.component("VueSlider", VueSlider);
+
+Vue.component("Pagination", Pagination);
 
 Vue.component(VueHoverMask.name, VueHoverMask)
 

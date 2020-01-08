@@ -36,10 +36,10 @@
 
 <script>
 
-import Artists from '../components/Artists'
-import Albums from '../components/Albums'
-import Tracks from '../components/Tracks'
-import Playlists from '../components/Playlists'
+import Artists from '../components/searching/Artists'
+import Albums from '../components/searching/Albums'
+import Tracks from '../components/searching/Tracks'
+import Playlists from '../components/searching/Playlists'
 import { DoubleBounce } from 'vue-loading-spinner'
 
 export default {
@@ -58,7 +58,7 @@ export default {
             awaitingSearch: false,
             results: null,
             types: ['track', 'playlist', 'artist', 'album'],
-            selectedTypes: []
+            selectedTypes: [],
         }
     },
 
@@ -87,7 +87,8 @@ export default {
           if (!this.awaitingSearch) {
             setTimeout(() => {
               if(val !== '') {
-                this.$store.dispatch('fetchResults', { query: this.query, type: this.selectedTypes.join(','), route: this.$route.name })
+                this.$store.commit('setSearchQuery', this.query)
+                this.$store.dispatch('fetchAllResults', { query: this.query, type: this.selectedTypes.join(',') })
                 this.awaitingSearch = false
               }
             }, 1500)

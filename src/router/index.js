@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import store from '../store'
 
 Vue.use(VueRouter)
 
@@ -22,15 +21,14 @@ const routes = [
     },
     component: require("@/views/SearchResults.vue").default
   },
-  /* {
-    path: '/umek',
-    name: 'umek',
-    label: 'Umek',
+  {
+    path: "/playlists/:id",
+    name: "playlist",
     meta: {
       auth: true
     },
-    component: require('@/views/Umek.vue').default
-  }, */
+    component: require("@/views/Playlist.vue").default
+  },
   {
     path: "*",
     component: require("@/components/HandleAuth.vue").default

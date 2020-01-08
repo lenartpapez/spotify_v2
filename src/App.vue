@@ -17,9 +17,9 @@
 
 <script>
 
-  import Header from './components/Header'
-  import Nav from './components/Nav'
-  import Footer from './components/Footer'
+  import Header from './components/layout/Header'
+  import Nav from './components/layout/Nav'
+  import Footer from './components/layout/Footer'
 
   export default {
 
@@ -46,8 +46,8 @@
           volume: '0.5'
         });
 
-        player.addListener('player_state_changed', ({ duration, position, track_window: { current_track } }) => { 
-          this.$store.commit('setTrack', { track: current_track, duration: duration })
+        player.addListener('player_state_changed', ({ duration, position, track_window: { current_track, next_tracks } }) => { 
+          this.$store.commit('setTrack', { track: current_track, duration: duration, allow_controls: true })
         });
 
         player.connect();

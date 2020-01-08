@@ -10,13 +10,13 @@
             </div>
             <div v-if="$store.getters.trackName !== ''" class="controls flex flex-col items-center flex-grow mt-1">
                 <div class="flex items-center mb-2">
-                    <button class="p-2 w-10 rounded-full hover:bg-gray-900" @click="previousTrack">
+                    <button v-if="$store.getters.allowControls" class="p-2 w-10 rounded-full hover:bg-gray-900" @click="previousTrack">
                         <i class="fas fa-step-backward"></i>
                     </button>
                     <button @click="togglePlay" class="bg-red-500 p-2 w-10 mx-4 rounded-full hover:bg-red-700">
                         <i class="fas" :class="$store.getters.playing ? 'fa-pause' : 'fa-play'"></i>
                     </button>
-                    <button class="p-2 w-10 rounded-full hover:bg-gray-900" @click="nextTrack">
+                    <button v-if="$store.getters.allowControls" class="p-2 w-10 rounded-full hover:bg-gray-900" @click="nextTrack">
                         <i class="fas fa-step-forward"></i>
                     </button>
                 </div>
