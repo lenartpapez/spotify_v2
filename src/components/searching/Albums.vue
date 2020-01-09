@@ -1,8 +1,8 @@
 <template>
   <div class="flex flex-col">
     <div class="p-6 bg-gray-600 flex text-white justify-between">
-      <h3 class="text-4xl">Albums <span class="text-sm">({{ $store.getters.albumPages.total }})</span></h3>
-      <pagination :paging-info="$store.getters.albumPages" type="album"></pagination>
+      <h3 class="text-4xl">Albums <span class="text-sm">({{ albumPages.total }})</span></h3>
+      <pagination :paging-info="albumPages" type="album"></pagination>
     </div>
     <div class="flex flex-wrap p-3 items-end">
       <div class="w-1/5 p-3" v-for="album in data.items" :key="album.id">
@@ -19,14 +19,17 @@
 </template>
 
 <script>
-
-export default {
-  props: ["data"],
-  methods: {
-    playAlbum(album) {
-      this.$store.dispatch('play', { type: 'albums', toPlay: album })
+  import { mapGetters } from 'vuex'
+  export default {
+    props: ["data"],
+    methods: {
+      playAlbum(album) {
+        this.$store.dispatch('play', { type: 'albums', toPlay: album })
+      }
+    },
+    computed: {
+      ...mapGetters(['albumPages'])
     }
-  }
-};
+  };
 
 </script>

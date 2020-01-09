@@ -1,8 +1,8 @@
 <template>
     <div class="flex flex-col">
         <div class="p-6 bg-gray-600 flex text-white justify-between">
-            <h3 class="text-4xl">Artists <span class="text-sm">({{ $store.getters.artistPages.total }})</span></h3>
-            <pagination :paging-info="$store.getters.artistPages" type="artist"></pagination>
+            <h3 class="text-4xl">Artists <span class="text-sm">({{ artistPages.total }})</span></h3>
+            <pagination :paging-info="artistPages" type="artist"></pagination>
         </div>
         <div class="flex flex-wrap p-3 items-end">
             <div class="w-1/5 p-3" v-for="artist in data.items" :key="artist.id">
@@ -19,12 +19,16 @@
 </template>
 
 <script>
+    import { mapGetters } from 'vuex'
     export default {
         props: [ 'data' ],
         methods: {
             playArtist(artist) {
                 this.$store.dispatch('play', { type: 'artists', toPlay: artist })
             }
+        },
+        computed: {
+            ...mapGetters(['artistPages'])
         }
     }
 </script>

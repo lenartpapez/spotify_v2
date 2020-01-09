@@ -138,32 +138,14 @@ export default new Vuex.Store({
     userName: state => {
       return state.user.display_name
     },
-    trackName: state => {
-      return state.track.name
-    },
-    trackArtist: state => {
-      return state.track.artist
-    },
-    trackImage: state => {
-      return state.track.image
-    },
-    trackDuration: state => {
-      return state.track.duration
+    track: state => {
+      return state.track
     },
     playing: state => {
       return state.playing
     },
-    artistsSearch: state => {
-      return state.latestSearchResults.artists
-    },
-    albumsSearch: state => {
-      return state.latestSearchResults.albums
-    },
-    playlistsSearch: state => {
-      return state.latestSearchResults.playlists
-    },
-    tracksSearch: state => {
-      return state.latestSearchResults.tracks
+    searchResults: state => {
+      return state.latestSearchResults
     },
     searching: state => {
       return state.searching
@@ -180,11 +162,8 @@ export default new Vuex.Store({
     hasPlaylists: state => {
       return state.latestSearchResults.playlists && state.latestSearchResults.playlists.items.length > 0
     },
-    errorStatus: state => {
-      return state.error.status
-    },
-    errorMessage: state => {
-      return state.error.message
+    error: state => {
+      return state.error
     },
     allowControls: state => {
       return state.track.allowControls
