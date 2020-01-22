@@ -20,13 +20,13 @@
     },
     methods: {
       nextPage() {
-        this.$store.dispatch('fetchPaginated', { offset: this.pagingInfo.offset + this.pagingInfo.limit, type: this.type })
+        this.$store.dispatch('fetchPaginated', { type: this.type })
       },
       previousPage() {
-        this.$store.dispatch('fetchPaginated', { offset: this.pagingInfo.offset - this.pagingInfo.limit, type: this.type })
+        this.$store.dispatch('fetchPaginated', { previous: true, type: this.type })
       },
       jumpToFirstPage() {
-        this.$store.dispatch('fetchPaginated', { offset: 0, type: this.type })
+        this.$store.dispatch('fetchPaginated', { first: true, query: this.$route.query.q, type: this.type })
       },
       jumpToLastPage() {
         let last
@@ -35,7 +35,7 @@
         } else { 
           last = (this.lastPage - 1) * this.pagingInfo.limit
         }
-        this.$store.dispatch('fetchPaginated', { offset: last, type: this.type })
+        this.$store.dispatch('fetchPaginated', { last: true, query: this.$route.query.q, offset: last, type: this.type })
       },
     },
     computed: {

@@ -7,8 +7,10 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    searchQuery: '',
     user: {},
+    userPlaylists: {
+      items: []
+    },
     track: {
       artist: '',
       name: '',
@@ -25,8 +27,9 @@ export default new Vuex.Store({
       playlists: { items: [] },
       tracks: { items: [] }
     },
-    error: {
-      status: false,
+    alertInfo: {
+      display: false,
+      status: '',
       message: ''
     }
   },
@@ -41,9 +44,6 @@ export default new Vuex.Store({
       state.track.image = params.track.album.images[0].url
       state.track.allowControls = params.allow_controls
     },
-    setSearchQuery(state, query) {
-      state.searchQuery = query
-    },
     logout(state) {
       localStorage.clear()
       state.user = {}
@@ -56,24 +56,15 @@ export default new Vuex.Store({
       state.latestSearchResults = results
       state.searching = false
     },
-    setTracks(state, results) {
-      state.latestSearchResults.tracks = results
+    setPaginatedResults(state, params) {
+      state.latestSearchResults[params.type] = params.results
       state.searching = false
     },
-    setPlaylists(state, results) {
-      state.latestSearchResults.playlists = results
-      state.searching = false
+    setUserPlaylists(state, results) {
+      state.userPlaylists = results
     },
-    setAlbums(state, results) {
-      state.latestSearchResults.albums = results
-      state.searching = false
-    },
-    setArtists(state, results) {
-      state.latestSearchResults.artists = results
-      state.searching = false
-    },
-    setError(state, error) {
-      state.error = error
+    setAlertInfo(state, alertInfo) {
+      state.alertInfo = alertInfo
     },
     toggleSearching(state) {
       state.searching = !state.searching
@@ -83,50 +74,35 @@ export default new Vuex.Store({
     async setUserAction({ commit }) {
       await Axios.get('/me').then(response => commit('setUser', response.data))
     },
-    async fetchAllResults({ commit, state, getters }, params) {
-      state.searching = true
-      await Axios.get('search?query=' + getters.searchQuery + '&type=' + params.type + '&limit=10')
+    async fetchAllResults({ commit }, params) {
+      commit('toggleSearching')
+      await Axios.get('search?query=' + params.query + '&type=' + params.type + '&limit=10')
       .then(response => {
         commit('setResults', response.data)
       })
     },
-    async fetchPaginated({ commit, state, getters }, params) {
-      state.searching = true
-      await Axios.get('search?query=' + getters.searchQuery + '&type=' + params.type + '&limit=10&offset=' + params.offset)
-      .then(response => {
-        switch(params.type) {
-          case 'track': 
-            commit('setTracks', response.data.tracks)
-            break
-          case 'playlist': 
-            commit('setPlaylists', response.data.playlists)
-            break
-          case 'album': 
-            commit('setAlbums', response.data.albums)
-            break
-          case 'artist': 
-            commit('setArtists', response.data.artists)
-            break
-        }
-        
-      })
+    async fetchPaginated({ commit, getters }, params) {
+      commit('toggleSearching')
+      let type = params.type + 's'
+      let request = getters.searchResults[type].next
+      if(params.previous) request = getters.searchResults[type].previous
+      if(params.first) request = 'search?query=' + params.query + '&type=' + params.type + '&offset=0&limit=10'
+      if(params.last) request = 'search?query=' + params.query + '&type=' + params.type + '&offset=' + params.offset + '&limit=10'
+      let response = await Axios.get(request)
+      commit('setPaginatedResults', { type: type, results: response.data[type] })
+    },
+    async fetchUserPlaylists({ commit }) {
+      let response = await Axios.get("/me/playlists")
+      commit('setUserPlaylists', response.data)
     },
     async play({ commit, state }, params) {
-      if(params.type === 'playlists' || params.type === 'albums') {
-        Axios.put('/me/player/play?device_id=' + localStorage._spharmony_device_id, {
-          context_uri: params.uri,
-          offset: {
-            position: params.offset
-          }
-        })
-      } else if(params.type === 'artists') {
-        let response = await Axios.get(params.type + '/' + params.toPlay.id + '/top-tracks?country=' + state.user.country)
-        Axios.put('/me/player/play?device_id=' + localStorage._spharmony_device_id, {
-          uris: response.data.tracks.map(track => track.uri)
-        })
+      if(params.type !== 'tracks') {
+        let data = { context_uri: params.uri, offset: { position: 0 } }
+        if(params.type === 'artists') data = { context_uri: params.uri }
+        Axios.put('/me/player/play?device_id=' + localStorage._spharmony_device_id, data)
       } else {
         Axios.put('/me/player/play?device_id=' + localStorage._spharmony_device_id, {
-          uris: [ params.track.uri ]
+          uris: [ params.uri ]
         })
       }
       if (!state.playing) commit('togglePlaying')
@@ -137,6 +113,9 @@ export default new Vuex.Store({
   getters: {
     userName: state => {
       return state.user.display_name
+    },
+    userId: state => {
+      return state.user.id
     },
     track: state => {
       return state.track
@@ -162,46 +141,22 @@ export default new Vuex.Store({
     hasPlaylists: state => {
       return state.latestSearchResults.playlists && state.latestSearchResults.playlists.items.length > 0
     },
-    error: state => {
-      return state.error
+    alertInfo: state => {
+      return state.alertInfo
     },
     allowControls: state => {
       return state.track.allowControls
     },
-    searchQuery: state => {
-      return state.searchQuery
-    },
-    trackPages: state => {
+    pagingInfo: state => type => {
       return { 
-        offset: state.latestSearchResults.tracks.offset,
-        page: state.latestSearchResults.tracks.offset / state.latestSearchResults.tracks.limit + 1, 
-        limit: state.latestSearchResults.tracks.limit,
-        total: state.latestSearchResults.tracks.total
+        offset: state.latestSearchResults[type].offset,
+        page: state.latestSearchResults[type].offset / state.latestSearchResults[type].limit + 1, 
+        limit: state.latestSearchResults[type].limit,
+        total: state.latestSearchResults[type].total
       }
     },
-    albumPages: state => {
-      return { 
-        offset: state.latestSearchResults.albums.offset,
-        page: state.latestSearchResults.albums.offset / state.latestSearchResults.albums.limit + 1, 
-        limit: state.latestSearchResults.albums.limit,
-        total: state.latestSearchResults.albums.total
-      }
-    },
-    artistPages: state => {
-      return { 
-        offset: state.latestSearchResults.artists.offset,
-        page: state.latestSearchResults.artists.offset / state.latestSearchResults.artists.limit + 1, 
-        limit: state.latestSearchResults.artists.limit,
-        total: state.latestSearchResults.artists.total
-      }
-    },
-    playlistPages: state => {
-      return { 
-        offset: state.latestSearchResults.playlists.offset,
-        page: state.latestSearchResults.playlists.offset / state.latestSearchResults.playlists.limit + 1, 
-        limit: state.latestSearchResults.playlists.limit,
-        total: state.latestSearchResults.playlists.total
-      }
-    },
+    userPlaylists: state => {
+      return state.userPlaylists
+    }
   }
 })

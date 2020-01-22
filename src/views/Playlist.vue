@@ -4,7 +4,7 @@
       <i class="fas fa-chevron-left" style="margin-left: -.2rem; margin-top: .2rem; font-size: 1.4rem"></i>
     </button>
     <div class="flex w-1/3 self-start sticky mr-5 p-10 flex-col items-center text-center" v-if="playlist" style="top: 1.25rem">
-      <img class="rounded-full mb-4 shadow-lg" :src="playlist.images[0].url" alt="">
+      <img class="rounded-full mb-4 shadow-lg" :src="playlist.images[0] ? playlist.images[0].url : '/img/no-cover.png'" alt="">
       <span class="font-bold text-xl">{{ playlist.name }}</span>
       <span class="text-sm text text-gray-700 mb-4">{{ playlist.owner.display_name }}</span>
       <button class="bg-red-500 px-6 py-3 rounded-r-full rounded-l-full text-white mb-4" @click="playPlaylist(playlist)">Play</button>

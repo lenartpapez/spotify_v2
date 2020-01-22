@@ -91,14 +91,6 @@ body {
   @apply text-gray-900;
 }
 
-.alert {
-  @apply border px-4 py-2 rounded relative;
-}
-
-.alert-danger {
-  @apply bg-red-100 border-red-400 text-red-700;
-}
-
 .btn-nav {
   @apply bg-gray-600 w-full;
 }

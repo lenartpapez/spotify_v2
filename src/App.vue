@@ -12,6 +12,7 @@
       </div>
     </div>
     <app-footer></app-footer>
+    <alert></alert>
   </div>
 </template>
 
@@ -20,19 +21,25 @@
   import Header from './components/layout/Header'
   import Nav from './components/layout/Nav'
   import Footer from './components/layout/Footer'
+  import Alert from './components/common/Alert'
+import { mapGetters } from 'vuex'
 
   export default {
 
     components: {
       'app-header': Header,
       'app-nav': Nav,
-      'app-footer': Footer
+      'app-footer': Footer,
+      'alert': Alert
     },
     
 
     created() {
       this.setInterceptor()
-      if(this.localStorage.access_token) this.$store.dispatch('setUserAction')
+      if(this.localStorage.access_token) {
+        this.$store.dispatch('setUserAction')
+        this.$store.dispatch('fetchUserPlaylists')
+      }
       window.onSpotifyWebPlaybackSDKReady = () => {
         this.initializePlayer()
       };
@@ -56,19 +63,23 @@
 
       setInterceptor() {
         this.axios.interceptors.response.use((response) => {
-          this.$store.commit('setError', { status: false, message: '' })
+          if(this.searching) this.$store.commit('toggleSearching')
           return response;
         }, (error) => {
           if(error.response.status === 401) {
             this.$store.commit('logout')
-          } else if(error.response.status === 400) {
-            this.$store.commit('setError', { status: true, message: error.response.data.error.message })
+          } else {
+            this.$store.commit('setResults', {})
+            this.$store.commit('setAlertInfo', { display: true, status: 'error', message: error.response.data.error.message })
           }
-          this.$store.commit('toggleSearching')
           return Promise.reject(error);
         });
       }
-    }
+    },
+
+    computed: {
+      ...mapGetters(['searching'])
+    },
 
   }
 

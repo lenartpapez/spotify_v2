@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="search-and-type">
-          <input class="bg-transparent outline-none w-full mr-3 shadow-none" v-model="query" :placeholder="placeholder" />
+          <input class="bg-transparent outline-none w-full mr-3 shadow-none" v-model="query" placeholder="Type to search..." />
           <div class="types flex">
             <label v-for="type in types" :key="type" class="flex items-center text-white">
               <input class="mr-1" type="checkbox" :value="type" v-model="selectedTypes">
@@ -15,20 +15,11 @@
             <div class="loader" v-if="searching">
               <double-bounce></double-bounce>
             </div>
-            <div :class="{'opacity-10': searching }" v-if="!error.status">
+            <div :class="{'opacity-10': searching }" v-if="!alertInfo.display">
               <tracks v-if="hasTracks" :data="searchResults.tracks" />
               <playlists v-if="hasPlaylists" :data="searchResults.playlists" />
               <artists v-if="hasArtists" :data="searchResults.artists" />
               <albums v-if="hasAlbums" :data="searchResults.albums" />
-            </div>
-            <div v-else class="bg-red-100 border-b-2 border-red-500 text-red-900 px-4 py-3" role="alert">
-              <div class="flex">
-                <div class="py-1"><svg class="fill-current h-6 w-6 text-red-500 mr-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z"/></svg></div>
-                <div>
-                  <p class="font-bold">Trouble getting results</p>
-                  <p class="text-sm">{{ error.message }}</p>
-                </div>
-              </div>
             </div>
         </div>
     </div>
@@ -55,7 +46,7 @@ export default {
 
     data() {
         return {
-            query: '',
+            query: this.$route.query.q ? this.$route.query.q : '',
             awaitingSearch: false,
             results: null,
             types: ['track', 'playlist', 'artist', 'album'],
@@ -64,13 +55,21 @@ export default {
     },
 
     created() {
-      this.$store.commit('setError', { status: false, message: '' })
       this.selectedTypes = this.types
     },
 
     watch: {
-        query() {
-          this.search()
+        query(val) {
+          this.$router.push({ query: { q: val }})
+          if(val) {
+            this.search()
+          }
+        },
+        '$route.query.q': {
+          immediate: true,
+          handler(val) {
+            this.query = val
+          }
         },
         selectedTypes() {
           if(this.query !== '') this.search()
@@ -84,14 +83,11 @@ export default {
       },
 
       methods: {
-        search(val) {
+        search() {
           if (!this.awaitingSearch) {
             setTimeout(() => {
-              if(val !== '') {
-                this.$store.commit('setSearchQuery', this.query)
-                this.$store.dispatch('fetchAllResults', { query: this.searchQuery, type: this.selectedTypes.join(',') })
+                this.$store.dispatch('fetchAllResults', { query: this.query, type: this.selectedTypes.join(',') })
                 this.awaitingSearch = false
-              }
             }, 1500)
           }
           this.awaitingSearch = true
@@ -101,19 +97,14 @@ export default {
       computed: {
 
         ...mapGetters([
-          'searchQuery',
           'hasTracks',
           'hasAlbums',
           'hasPlaylists',
           'hasArtists',
           'searching',
           'searchResults',
-          'error'
-        ]),
-
-        placeholder() {
-          return this.searchQuery !== '' ? this.searchQuery : 'Type to search...'
-        },
+          'alertInfo'
+        ])
 
       }
     

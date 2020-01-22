@@ -26,7 +26,8 @@
       return {
         auth_uri: 'https://accounts.spotify.com/authorize',
         client_id: '638f3dcd9fef4cd9a6490e0e4740d1bb',
-        scope: 'streaming user-read-playback-state user-read-private user-read-email user-modify-playback-state',
+        scope: 'streaming user-read-playback-state user-read-private user-read-email' +
+          ' user-modify-playback-state playlist-modify-public playlist-modify-private',
         redirect_uri: 'http://localhost:8080'
       }
     },

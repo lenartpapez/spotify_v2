@@ -22,6 +22,16 @@ const routes = [
     component: require("@/views/SearchResults.vue").default
   },
   {
+    path: "/my-playlists", 
+    name: "my-playlists",
+    label: "My Playlists",
+    icon: "fa fa-headphones",
+    meta: {
+      auth: true
+    },
+    component: require("@/views/UserPlaylists.vue").default
+  },
+  {
     path: "/playlists/:id",
     name: "playlist",
     meta: {
