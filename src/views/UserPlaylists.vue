@@ -5,11 +5,13 @@
       <span class="text-gray-600 text-sm block">No playlists.</span>
     </div>
     <div v-else>
-      <playlists @edit="openModal($event)" :data="userPlaylists" :user="true" />
+      <playlists class="mb-10" @edit="openModal($event)" :data="nonEmptyPlaylists" :user="true" />
+      <span class="text-2xl">Empty playlists</span>
+      <playlists class="mt-2" @edit="openModal($event)" :data="emptyPlaylists" :user="true" />
     </div>
 
     <!-- Create/edit modal -->
-    <modal @close="closeModal" @submit="submitData" :class="showModal ? 'block' : 'hidden'">
+    <modal width="w-1/4" @close="closeModal" @submit="submitData" :validated="playlist.name && playlist.description" :class="showModal ? 'block' : 'hidden'">
       <template #header>
         {{ editMode ? 'Edit - ' + playlist.name : 'Create playlist' }}
       </template>
@@ -54,10 +56,14 @@
         editMode: false
       }
     },
-    
+
+    created() {
+      this.$store.dispatch('fetchUserPlaylists')
+    },
+
     methods: {
-      openModal(id = null) {
-        if(id) {
+      openModal(id) {
+        if(typeof id === 'string') {
           this.editMode = true
           this.playlist = this.userPlaylists.items.find(p => p.id === id)
         }
@@ -93,7 +99,13 @@
     },
 
     computed: {
-      ...mapGetters(['userPlaylists', 'userId'])
+      ...mapGetters(['userPlaylists', 'userId']),
+      nonEmptyPlaylists() {
+        return { items: this.userPlaylists.items.filter(i => i.tracks.total > 0) }
+      },
+      emptyPlaylists() {
+        return { items: this.userPlaylists.items.filter(i => i.tracks.total === 0) }
+      }
     }
     
   }

@@ -5,7 +5,7 @@
       <pagination :paging-info="pagingInfo('albums')" type="album"></pagination>
     </div>
     <div class="flex flex-wrap p-3 items-end">
-      <div class="w-1/5 p-3" v-for="album in data.items" :key="album.id">
+      <div class="w-1/2 sm:w-1/3 lg:w-1/4 xl:w-1/5 p-3" v-for="album in data.items" :key="album.id">
         <span class="text-sm mr-2">{{ album.name }}</span>
         <vue-hover-mask class="mt-3 shadow-lg">
           <img class="rounded object-cover w-full" :src="album.images[0].url" />

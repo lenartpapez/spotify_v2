@@ -36,10 +36,7 @@ import { mapGetters } from 'vuex'
 
     created() {
       this.setInterceptor()
-      if(this.localStorage.access_token) {
-        this.$store.dispatch('setUserAction')
-        this.$store.dispatch('fetchUserPlaylists')
-      }
+      if(this.localStorage.access_token) this.$store.dispatch('setUserAction')
       window.onSpotifyWebPlaybackSDKReady = () => {
         this.initializePlayer()
       };

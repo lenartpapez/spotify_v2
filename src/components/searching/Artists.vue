@@ -5,7 +5,7 @@
             <pagination :paging-info="pagingInfo('artists')" type="artist"></pagination>
         </div>
         <div class="flex flex-wrap p-3 items-end">
-            <div class="w-1/5 p-3" v-for="artist in data.items" :key="artist.id">
+            <div class="w-1/2 sm:w-1/3 lg:w-1/4 xl:w-1/5 p-3" v-for="artist in data.items" :key="artist.id">
                 <span class="text-sm mr-2">{{ artist.name }}</span>
                 <vue-hover-mask @click="playArtist(artist.uri)" class="mt-3 shadow-lg">
                     <img class="rounded object-cover w-full" :src="artist.images[0] ? artist.images[0].url : '/img/no-cover.png'" />

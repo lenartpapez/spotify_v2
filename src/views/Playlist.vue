@@ -12,23 +12,30 @@
       <span class="text-sm font-bold text text-gray-700">{{ tracks.items.length }} songs</span>
     </div>
     <div class="flex flex-col p-10 w-2/3">
-      <div class="flex flex bg-gray-200 mb-1 items-center" v-for="(item, index) in tracks.items" :key="index">
-        <button class="rounded-full px-4" @click="playTrack(index)">
-          <i class="fas fa-play text-red-500 text-xs"></i>
-        </button>
-        <div class="flex flex-col py-2">
-          <span class="text-sm">{{ item.track.name }}</span>
-          <div>
-            <span v-for="(artist, index) in item.track.artists" :key="index" class="text-gray-600 text-sm mr-1">{{ artist.name }} {{ index !== item.track.artists.length - 1 ? '&bull;' : '' }}</span>
+      <div class="flex bg-gray-200 mb-1 px-4 justify-between items-center" v-for="(item, index) in tracks.items" :key="index">
+        <div class="flex">
+          <button class="rounded-full mr-4" @click="playTrack(index)">
+            <i class="fas fa-play text-red-500 text-xs"></i>
+          </button>
+          <div class="flex flex-col py-2">
+            <span class="text-sm">{{ item.track.name }}</span>
+            <div>
+              <span v-for="(artist, index) in item.track.artists" :key="index" class="text-gray-600 text-sm mr-1">{{ artist.name }} {{ index !== item.track.artists.length - 1 ? '&bull;' : '' }}</span>
+            </div>
           </div>
         </div>
+        <button v-if="userId === playlist.owner.id" @click="removeFromPlaylist(index)" class="text-red-500">
+          <i class="fa fa-times"></i>
+        </button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
   export default {
+    name: 'Playlist',
     data() {
       return {
         playlist: null,
@@ -51,7 +58,19 @@
       },
       playTrack(index) {
         this.$store.dispatch('play', { type: 'playlists', uri: this.playlist.uri, offset: index })
+      },
+      removeFromPlaylist(index) {
+        let data = [{ uri: this.tracks.items[index].track.uri }]
+        this.axios({ method: 'delete', url: 'playlists/' + this.playlist.id + '/tracks', data: { tracks: data }})
+        .then(response => {
+          this.tracks.items.splice(index, 1)
+          this.$store.commit('setAlertInfo', { display: true, status: 'success', message: 'Track removed' })
+        })
       }
-    }
+    },
+
+    computed: {
+      ...mapGetters(['userId'])
+    },
   }
 </script>

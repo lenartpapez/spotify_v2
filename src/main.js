@@ -8,8 +8,10 @@ import './assets/css/tailwind.css'
 import reactiveStorage from 'vue-reactive-storage'
 import VueSlider from "vue-slider-component"
 import "vue-slider-component/theme/antd.css"
+import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import VueHoverMask from 'vue-hover-mask'
 import Pagination from "./components/common/Pagination.vue"
+import Treeselect from '@riophae/vue-treeselect'
 
 Vue.use(VueAxios, axios)
 
@@ -29,6 +31,8 @@ Vue.use(require('vue-moment'));
 Vue.component("VueSlider", VueSlider);
 
 Vue.component("Pagination", Pagination);
+
+Vue.component("Treeselect", Treeselect);
 
 Vue.component(VueHoverMask.name, VueHoverMask)
 

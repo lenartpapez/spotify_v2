@@ -74,6 +74,9 @@ export default new Vuex.Store({
     async setUserAction({ commit }) {
       await Axios.get('/me').then(response => commit('setUser', response.data))
     },
+    async fetchUserPlaylists({ commit }) {
+      await Axios.get('/me/playlists').then(response => commit('setUserPlaylists', response.data))
+    },
     async fetchAllResults({ commit }, params) {
       commit('toggleSearching')
       await Axios.get('search?query=' + params.query + '&type=' + params.type + '&limit=10')
@@ -91,13 +94,9 @@ export default new Vuex.Store({
       let response = await Axios.get(request)
       commit('setPaginatedResults', { type: type, results: response.data[type] })
     },
-    async fetchUserPlaylists({ commit }) {
-      let response = await Axios.get("/me/playlists")
-      commit('setUserPlaylists', response.data)
-    },
     async play({ commit, state }, params) {
       if(params.type !== 'tracks') {
-        let data = { context_uri: params.uri, offset: { position: 0 } }
+        let data = { context_uri: params.uri, offset: { position: params.offset } }
         if(params.type === 'artists') data = { context_uri: params.uri }
         Axios.put('/me/player/play?device_id=' + localStorage._spharmony_device_id, data)
       } else {

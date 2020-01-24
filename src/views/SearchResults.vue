@@ -15,7 +15,7 @@
             <div class="loader" v-if="searching">
               <double-bounce></double-bounce>
             </div>
-            <div :class="{'opacity-10': searching }" v-if="!alertInfo.display">
+            <div :class="{'opacity-10': searching }">
               <tracks v-if="hasTracks" :data="searchResults.tracks" />
               <playlists v-if="hasPlaylists" :data="searchResults.playlists" />
               <artists v-if="hasArtists" :data="searchResults.artists" />
@@ -46,7 +46,7 @@ export default {
 
     data() {
         return {
-            query: this.$route.query.q ? this.$route.query.q : '',
+            query: this.$route.query.q ? this.$route.query.q : undefined,
             awaitingSearch: false,
             results: null,
             types: ['track', 'playlist', 'artist', 'album'],
@@ -72,7 +72,7 @@ export default {
           }
         },
         selectedTypes() {
-          if(this.query !== '') this.search()
+          if(this.query !== undefined) this.search()
         }
       },
 
