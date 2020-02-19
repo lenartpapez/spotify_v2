@@ -7,7 +7,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    user: {},
+    user: null,
     userPlaylists: {
       items: []
     },
@@ -46,7 +46,7 @@ export default new Vuex.Store({
     },
     logout(state) {
       localStorage.clear()
-      state.user = {}
+      state.user = null
       router.go()
     },
     togglePlaying(state) {
@@ -109,6 +109,9 @@ export default new Vuex.Store({
   modules: {
   },
   getters: {
+    user: state => {
+      return state.user
+    },
     userName: state => {
       return state.user.display_name
     },

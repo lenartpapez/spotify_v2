@@ -23,7 +23,9 @@ if(token) {
 }
 
 Vue.use(reactiveStorage, {
-  access_token: null
+  access_token: null,
+  refresh_token: null,
+  expires_in: null
 });
 
 Vue.use(require('vue-moment'));

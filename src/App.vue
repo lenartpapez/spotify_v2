@@ -22,7 +22,7 @@
   import Nav from './components/layout/Nav'
   import Footer from './components/layout/Footer'
   import Alert from './components/common/Alert'
-import { mapGetters } from 'vuex'
+  import { mapGetters } from 'vuex'
 
   export default {
 
@@ -36,10 +36,15 @@ import { mapGetters } from 'vuex'
 
     created() {
       this.setInterceptor()
-      if(this.localStorage.access_token) this.$store.dispatch('setUserAction')
-      window.onSpotifyWebPlaybackSDKReady = () => {
-        this.initializePlayer()
-      };
+      let query = this.$route.query
+      if(this.localStorage.access_token) {
+        this.startTheApp()
+      } else if (query.access_token) {
+        this.localStorage.access_token = query.access_token
+        this.localStorage.refresh_token = query.refresh_token
+        this.startTheApp()
+        this.$router.push('/')
+      }
     },
 
     methods: {
@@ -58,13 +63,21 @@ import { mapGetters } from 'vuex'
         window.player = player
       },
 
+      startTheApp() {
+        window.onSpotifyWebPlaybackSDKReady = () => {
+          this.initializePlayer()
+        };
+        this.axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.localStorage.access_token
+        this.$store.dispatch('setUserAction')
+      },
+
       setInterceptor() {
         this.axios.interceptors.response.use((response) => {
           if(this.searching) this.$store.commit('toggleSearching')
           return response;
         }, (error) => {
           if(error.response.status === 401) {
-            this.$store.commit('logout')
+            error.redirect('http://spotify-backend.test/login/spotify')
           } else {
             this.$store.commit('setResults', {})
             this.$store.commit('setAlertInfo', { display: true, status: 'error', message: error.response.data.error.message })

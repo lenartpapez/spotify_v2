@@ -38,14 +38,11 @@ const routes = [
       auth: true
     },
     component: require("@/views/Playlist.vue").default
-  },
-  {
-    path: "*",
-    component: require("@/components/HandleAuth.vue").default
   }
 ];
 
 const router = new VueRouter({
+  mode: 'history',
   routes
 })
 

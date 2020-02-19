@@ -6,45 +6,34 @@
       </router-link>
     </div>
     <div class="flex">
-      <div v-if="localStorage.access_token">
-        <span class="text-white font-semibold mr-3" v-if="$store.state.user"> {{ $store.getters.userName }} </span>
+      <div v-if="user">
+        <span class="text-white font-semibold mr-3"> {{ user.display_name }} </span>
         <button @click="logout" class="btn text-white bg-red-500 hover:bg-red-700">
            Logout
         </button>
       </div>
-      <button v-else @click="authorize" class="btn text-white bg-red-500 hover:bg-red-700">
-           Login
-      </button>
+      <a href="http://spotify-backend.test/login/spotify" v-else class="btn text-white bg-red-500 hover:bg-red-700">
+        Login
+      </a>
     </div>
   </div>
 </template>
 
 <script>
+  import { mapGetters } from 'vuex'
   export default {
 
-    data () {
-      return {
-        auth_uri: 'https://accounts.spotify.com/authorize',
-        client_id: '638f3dcd9fef4cd9a6490e0e4740d1bb',
-        scope: 'streaming user-read-playback-state user-read-private user-read-email' +
-          ' user-modify-playback-state playlist-modify-public playlist-modify-private',
-        redirect_uri: 'http://localhost:8080'
-      }
-    },
-
     methods: {
-
-      authorize () {
-        window.location.replace(this.auth_uri + '?client_id=' + this.client_id +
-      '&response_type=token&scope=' + this.scope + '&redirect_uri=' +
-        this.redirect_uri + '&show_dialog=true')
-      },
 
       logout () {
         this.$store.commit('logout')
         this.$router.go()
       }
       
+    },
+
+    computed: {
+      ...mapGetters(['user'])
     }
 
   }
