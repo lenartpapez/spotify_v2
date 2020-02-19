@@ -50,28 +50,30 @@ export default {
             awaitingSearch: false,
             results: null,
             types: ['track', 'playlist', 'artist', 'album'],
-            selectedTypes: [],
+            selectedTypes: null,
         }
     },
 
     created() {
-      this.selectedTypes = this.types
+      this.selectedTypes = this.$route.query.t ? this.$route.query.t.split(',') : this.types
     },
 
     watch: {
         query(val) {
-          this.$router.push({ query: { q: val }})
-          if(val) {
+          this.$router.push({ query: { q: val , t: this.selectedTypes.join(',') }}).catch(err => {})
+          if(this.query) {
             this.search()
           }
         },
-        '$route.query.q': {
-          immediate: true,
+        '$route.query': {
+          deep: true,
           handler(val) {
-            this.query = val
+              this.query = val.q
+              if(val.t) this.selectedTypes = val.t.split(',')
           }
         },
-        selectedTypes() {
+        selectedTypes(val) {
+          this.$router.push({ query: { q: this.query, t: val.join(',') }}).catch(err => {})
           if(this.query !== undefined) this.search()
         }
       },
@@ -85,6 +87,7 @@ export default {
       methods: {
         search() {
           if (!this.awaitingSearch) {
+            this.$store.commit('toggleSearching')
             setTimeout(() => {
                 this.$store.dispatch('fetchAllResults', { query: this.query, type: this.selectedTypes.join(',') })
                 this.awaitingSearch = false

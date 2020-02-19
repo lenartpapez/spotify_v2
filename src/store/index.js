@@ -78,7 +78,6 @@ export default new Vuex.Store({
       await Axios.get('/me/playlists').then(response => commit('setUserPlaylists', response.data))
     },
     async fetchAllResults({ commit }, params) {
-      commit('toggleSearching')
       await Axios.get('search?query=' + params.query + '&type=' + params.type + '&limit=10')
       .then(response => {
         commit('setResults', response.data)
