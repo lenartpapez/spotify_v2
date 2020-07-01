@@ -1,29 +1,8 @@
-# spotify_v2
+## How to
 
-## Project setup
-```
-npm install
-```
+Clone the repository and run ```npm install```. For using the app you will need a Spotify Premium account because Spotify requires a premium account to access their API. You will also need my other repository ```spotify-backend``` to be able to support token refreshing and server-side authentication.
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
 
-### Compiles and minifies for production
-```
-npm run build
-```
+### Note
 
-### Run your tests
-```
-npm run test
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+There are still a few bugs in the bottom player behaviour.
