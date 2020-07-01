@@ -2,7 +2,7 @@
     <div class="footer">
         <div v-if="track.name !== ''" class="flex p-4 items-center">
             <div class="w-1/3 flex">
-                <img class="h-12 mr-3 rounded" :src="track.image" alt="" />
+                <img class="hidden md:block h-12 mr-3 rounded" :src="track.image" alt="" />
                 <div class="flex flex-col justify-center">
                     <span class="block text-xs">{{ track.artist }}</span>
                     <span class="block text-sm">{{ track.name }}</span>
@@ -10,13 +10,13 @@
             </div>
             <div v-if="track.name !== ''" class="controls flex flex-col items-center flex-grow mt-1">
                 <div class="flex items-center mb-2">
-                    <button v-if="track.allowControls" class="p-2 w-10 rounded-full hover:bg-gray-900" @click="previousTrack">
+                    <button v-if="track.type !== 'tracks'" class="p-2 w-10 rounded-full hover:bg-gray-900" @click="previousTrack">
                         <i class="fas fa-step-backward"></i>
                     </button>
                     <button @click="togglePlay" class="bg-red-500 p-2 w-10 mx-4 rounded-full hover:bg-red-700">
                         <i class="fas" :class="playing ? 'fa-pause' : 'fa-play'"></i>
                     </button>
-                    <button v-if="track.allowControls" class="p-2 w-10 rounded-full hover:bg-gray-900" @click="nextTrack">
+                    <button v-if="track.type !== 'tracks'" class="p-2 w-10 rounded-full hover:bg-gray-900" @click="nextTrack">
                         <i class="fas fa-step-forward"></i>
                     </button>
                 </div>
@@ -69,7 +69,7 @@
         watch: {
             track: {
                 deep: true,
-                handler() {
+                handler(val) {
                     this.position = 0
                 }
             },
@@ -85,7 +85,9 @@
             }
         },
 
+
         methods: {
+            
 
             async togglePlay() {
                 window.player.togglePlay().then(() => this.$store.commit('togglePlaying'))
@@ -106,8 +108,11 @@
             updateProgress() {
                 if (this.playing) {
                     this.progress = setInterval(() => {
-                        if(this.position + 1000 < this.track.duration) {
+                        if(this.position + 1000 <= this.track.duration) {
                             this.position += 1000
+                        } else {
+                            if(this.track.type === 'tracks') this.$store.commit('togglePlaying')
+                            this.position = 0
                         }
                     }, 1000)
                 }

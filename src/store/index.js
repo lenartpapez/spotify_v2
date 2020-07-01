@@ -15,9 +15,9 @@ export default new Vuex.Store({
       artist: '',
       name: '',
       duration: 0,
-      position: 0,
       image: '',
-      allowControls: false
+      uri: '',
+      type: ''
     },
     playing: false,
     searching: false,
@@ -42,7 +42,8 @@ export default new Vuex.Store({
       state.track.name = params.track.name
       state.track.duration = params.duration
       state.track.image = params.track.album.images[0].url
-      state.track.allowControls = params.allow_controls
+      state.track.uri = params.uri
+      state.track.type = params.type
     },
     logout(state) {
       localStorage.clear()
@@ -157,7 +158,7 @@ export default new Vuex.Store({
       }
     },
     userPlaylists: state => {
-      return state.userPlaylists
+      return state.userPlaylists.items
     }
   }
 })

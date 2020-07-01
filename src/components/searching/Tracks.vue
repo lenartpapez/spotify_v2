@@ -1,7 +1,7 @@
 <template>
     <div class="flex flex-col">
         <div class="p-6 bg-gray-600 flex text-white justify-between items-center">
-            <h3 class="text-4xl">Tracks <span class="text-sm">({{ pagingInfo('tracks').total }})</span></h3>
+            <h3 class="text-lg md:text-4xl">Tracks <span class="text-sm">({{ pagingInfo('tracks').total }})</span></h3>
             <div class="flex items-center">
                 <div class="mr-10" v-if="selected.length">
                     <button @click="openModal" class="btn h-8 text-white bg-red-500 hover:bg-red-700">
@@ -26,11 +26,6 @@
                         <i v-else @click="addToSelection(track.id)" class="fas p-3 text-sm fa-plus rounded-full bg-green-500 text-white"></i>
                     </template>
                     <i v-if="selected.map(t => t.id).includes(track.id)" class="absolute checkmark p-3 top-0 right-0 bg-green-500"></i>
-                    <!-- <div class="absolute h-full top-0 w-full z-10 flex flex-col justify-center flex-wrap shadow-lg rounded-md bg-white" v-if="dropdown === track.id">
-                        <button @click="addToPlaylist(playlist.id, track.id)" class="text-sm px-6 py-2 hover:bg-red-500 hover:text-white" v-for="playlist in userPlaylists.items" :key="playlist.id">
-                            {{ playlist.name }}
-                        </button>
-                    </div> -->
                 </vue-hover-mask> 
                 
             </div>
@@ -118,7 +113,7 @@
         computed: {
             ...mapGetters(['pagingInfo', 'userPlaylists']),
             options() {
-                return this.userPlaylists.items.map(i => {
+                return this.userPlaylists.map(i => {
                     return { id: i.id, label: i.name }
                 })
             }

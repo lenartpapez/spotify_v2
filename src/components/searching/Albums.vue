@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col">
     <div class="p-6 bg-gray-600 flex text-white justify-between">
-      <h3 class="text-4xl">Albums <span class="text-sm">({{ pagingInfo('albums').total }})</span></h3>
+      <h3 class="text-lg md:text-4xl">Albums <span class="text-sm">({{ pagingInfo('albums').total }})</span></h3>
       <pagination :paging-info="pagingInfo('albums')" type="album"></pagination>
     </div>
     <div class="flex flex-wrap p-3 items-end">

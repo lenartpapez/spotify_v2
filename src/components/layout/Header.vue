@@ -9,10 +9,10 @@
       <div v-if="user">
         <span class="text-white font-semibold mr-3"> {{ user.display_name }} </span>
         <button @click="logout" class="btn text-white bg-red-500 hover:bg-red-700">
-           Logout
+            Logout
         </button>
       </div>
-      <a href="http://spotify-backend.test/login/spotify" v-else class="btn text-white bg-red-500 hover:bg-red-700">
+      <a href="http://spotify-backend.test/auth" v-else class="btn text-white bg-red-500 hover:bg-red-700">
         Login
       </a>
     </div>

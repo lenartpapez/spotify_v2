@@ -1,7 +1,7 @@
 <template>
     <div class="flex flex-col">
         <div v-if="!user" class="p-6 bg-gray-600 flex text-white justify-between">
-            <h3 class="text-4xl">Playlists <span class="text-sm">({{ pagingInfo('playlists').total }})</span></h3>
+            <h3 class="text-lg md:text-4xl">Playlists <span class="text-sm">({{ pagingInfo('playlists').total }})</span></h3>
             <pagination v-if="!user" :paging-info="pagingInfo('playlists')" type="playlist"></pagination>
         </div>
         <div class="flex flex-wrap" :class="!user ? 'p-3' : ''">

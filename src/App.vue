@@ -32,18 +32,26 @@
       'app-footer': Footer,
       'alert': Alert
     },
-    
 
     created() {
       this.setInterceptor()
       let query = this.$route.query
-      if(this.localStorage.access_token) {
+      let start = false
+      if(query.access_token && query.refresh_token) {
+        localStorage.access_token = query.access_token
+        localStorage.refresh_token = query.refresh_token
+        start = true
+      }
+      if(query.access_token && !query.refresh_token) {
+        localStorage.access_token = query.access_token
+        start = true
+      }
+      if(!query.access_token && localStorage.access_token) {
+        start = true
+      }
+      if(start) { 
         this.startTheApp()
-      } else if (query.access_token) {
-        this.localStorage.access_token = query.access_token
-        this.localStorage.refresh_token = query.refresh_token
-        this.startTheApp()
-        this.$router.push('/')
+        if(query.access_token) this.$router.push('/')
       }
     },
 
@@ -51,12 +59,20 @@
       initializePlayer() {
         const player = new Spotify.Player({
           name: 'VueMusic Player',
-          getOAuthToken: cb => { cb(localStorage.access_token.slice(1, -1)); },
+          getOAuthToken: async cb => {
+            if(localStorage.refresh_token) await this.refreshToken()
+            cb(localStorage.access_token)
+            if(this.track.uri) {
+              this.$store.dispatch('play', { type: this.track.type, uri: this.track.uri, offset: 0 })
+            }
+          },
           volume: '0.5'
         });
 
-        player.addListener('player_state_changed', ({ duration, position, track_window: { current_track, next_tracks } }) => { 
-          this.$store.commit('setTrack', { track: current_track, duration: duration, allow_controls: true })
+        player.addListener('player_state_changed', ({ duration, position, track_window: { current_track, previous_tracks }, context }) => {
+          if(current_track.uri !== this.$store.getters.track.uri) {
+            this.$store.commit('setTrack', { track: current_track, duration: duration, type: context.uri ? context.uri.split(':')[1] + 's' : 'tracks', uri: context.uri ? context.uri : current_track.uri })
+          }
         });
 
         player.connect();
@@ -64,11 +80,12 @@
       },
 
       startTheApp() {
+        this.axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.access_token
+        this.$store.dispatch('setUserAction')
+        this.$store.dispatch('fetchUserPlaylists')
         window.onSpotifyWebPlaybackSDKReady = () => {
           this.initializePlayer()
         };
-        this.axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.localStorage.access_token
-        this.$store.dispatch('setUserAction')
       },
 
       setInterceptor() {
@@ -76,19 +93,29 @@
           if(this.searching) this.$store.commit('toggleSearching')
           return response;
         }, (error) => {
-          if(error.response.status === 401) {
-            error.redirect('http://spotify-backend.test/login/spotify')
+          if(error.response.status === 401 && !localStorage.refresh_token) {
+              this.$store.commit('logout')
           } else {
             this.$store.commit('setResults', {})
             this.$store.commit('setAlertInfo', { display: true, status: 'error', message: error.response.data.error.message })
           }
           return Promise.reject(error);
         });
+      },
+
+      refreshToken() {
+        this.axios.post('http://spotify-backend.test/api/auth/refresh', {
+          refresh_token: localStorage.refresh_token
+        }).then(response => {
+            localStorage.access_token = response.data.access_token
+            this.axios.defaults.headers.common['Authorization'] = 'Bearer ' + response.data.access_token
+        })
       }
+
     },
 
     computed: {
-      ...mapGetters(['searching'])
+      ...mapGetters(['searching', 'track'])
     },
 
   }

@@ -1,7 +1,7 @@
 <template>
   <div class="p-5">
     <button class="btn text-white bg-red-500 hover:bg-red-700 mb-2" @click="openModal">Create new</button>
-    <div v-if="userPlaylists.items.length === 0">
+    <div v-if="userPlaylists.length === 0">
       <span class="text-gray-600 text-sm block">No playlists.</span>
     </div>
     <div v-else>
@@ -57,15 +57,11 @@
       }
     },
 
-    created() {
-      this.$store.dispatch('fetchUserPlaylists')
-    },
-
     methods: {
       openModal(id) {
         if(typeof id === 'string') {
           this.editMode = true
-          this.playlist = this.userPlaylists.items.find(p => p.id === id)
+          this.playlist = this.userPlaylists.find(p => p.id === id)
         }
         this.showModal = true
       },
@@ -101,10 +97,10 @@
     computed: {
       ...mapGetters(['userPlaylists', 'userId']),
       nonEmptyPlaylists() {
-        return { items: this.userPlaylists.items.filter(i => i.tracks.total > 0) }
+        return { items: this.userPlaylists.filter(i => i.tracks.total > 0) }
       },
       emptyPlaylists() {
-        return { items: this.userPlaylists.items.filter(i => i.tracks.total === 0) }
+        return { items: this.userPlaylists.filter(i => i.tracks.total === 0) }
       }
     }
     
